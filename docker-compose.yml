@@ -22,15 +22,12 @@ services:
 
   consent-app:
     container_name: consent-app
-    command: 'tail -f /dev/null'
     build:
       context: ./consent-app/
       dockerfile: Dockerfile
     volumes:
       - ./consent-app:/consent-app
       - '/consent-app/node_modules'
-    working_dir: /consent-app
-    #command: sh -c "npm install && node app.js"
     ports:
       - "3000:3000"
     env_file: ./consent-app/consent-app.env
