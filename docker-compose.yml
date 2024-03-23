@@ -11,16 +11,22 @@ services:
       - "4445:4445" # Admin port
     env_file: ./oauth-server/oauth-server.env
     depends_on:
-      - postgresd
+      postgresd:
+        condition: service_healthy
 
   postgresd:
     container_name: postgresd
-    image: postgres:13
+    image: postgres
     env_file: ./postgresd/postgresd.env
     ports:
       - "5432:5432"
     volumes:
       - ./postgresd/postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hydra"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   consent-app:
     container_name: consent-app
