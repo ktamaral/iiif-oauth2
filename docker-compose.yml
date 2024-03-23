@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  hydra:
+    container_name: hydra
+    build:
+      context: ./oauth-server/
+      dockerfile: Dockerfile
+    ports:
+      - "4444:4444" # Public port
+      - "4445:4445" # Admin port
+    env_file: ./oauth-server/oauth-server.env
+    depends_on:
+      - postgresd
+
+  postgresd:
+    container_name: postgresd
+    image: postgres:13
+    env_file: ./postgresd/postgresd.env
+    ports:
+      - "5432:5432"
+
+  consent-app:
+    container_name: consent-app
+    command: 'tail -f /dev/null'
+    build:
+      context: ./consent-app/
+      dockerfile: Dockerfile
+    volumes:
+      - ./consent-app:/consent-app
+      - '/consent-app/node_modules'
+    working_dir: /consent-app
+    #command: sh -c "npm install && node app.js"
+    ports:
+      - "3000:3000"
+    env_file: ./consent-app/consent-app.env
