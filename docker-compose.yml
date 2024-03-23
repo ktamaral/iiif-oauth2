@@ -3,6 +3,7 @@ version: '3'
 services:
   hydra:
     container_name: hydra
+    command: 'tail -f /dev/null'
     build:
       context: ./oauth-server/
       dockerfile: Dockerfile
@@ -10,6 +11,9 @@ services:
       - "4444:4444" # Public port
       - "4445:4445" # Admin port
     env_file: ./oauth-server/oauth-server.env
+    volumes:
+      - ./oauth-server/hydra-entrypoint.sh:/hydra-entrypoint.sh
+    #entrypoint: ["/bin/bash", "/hydra-entrypoint.sh"]
     depends_on:
       postgresd:
         condition: service_healthy

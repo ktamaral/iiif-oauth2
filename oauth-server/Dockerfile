@@ -2,7 +2,7 @@
 FROM debian:buster-slim as cert-generator
 
 # Install OpenSSL
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y bash openssl && rm -rf /var/lib/apt/lists/*
 
 # Create directory for certificates
 RUN mkdir /certs
@@ -22,3 +22,12 @@ ENV HYDRA_SERVE_TLS_KEY_PATH=/certs/key.pem
 
 # Expose ports for Hydra
 EXPOSE 4444 4445
+
+# Copy the initialization script into the image
+COPY ./oauth-server/init-hydra.sh /init-hydra.sh
+
+# Make sure the script is executable
+RUN chmod +x /init-hydra.sh
+
+# Use the script as the default command
+CMD ["/init-hydra.sh"]
