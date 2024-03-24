@@ -41,3 +41,6 @@ dist
 .settings/
 .classpath
 .project
+
+# Postgres data
+postgres-data/
