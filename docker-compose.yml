@@ -53,3 +53,17 @@ services:
       retries: 5
     networks:
       - intranet
+
+  consent-app:
+    container_name: consent-app
+    build:
+      context: ./consent-app/
+      dockerfile: Dockerfile
+    depends_on:
+      - hydra
+    volumes:
+      - ./consent-app:/consent-app
+      - '/consent-app/node_modules'
+    ports:
+      - "3000:3000"
+    env_file: ./consent-app/consent-app.env
