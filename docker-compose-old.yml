@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  hydra:
+    container_name: hydra
+    build:
+      context: ./oauth-server/
+      dockerfile: Dockerfile
+    ports:
+      - "4444:4444" # Public port
+      - "4445:4445" # Admin port
+    env_file: ./oauth-server/oauth-server.env
+    depends_on:
+      - hydra-migrate
+
+  hydra-migrate:
+    container_name: hydra-migrate
+    image: oryd/hydra:v2.2.0
+    env_file: ./oauth-server/oauth-server.env
+    command: migrate sql --yes --config hydra.yaml
+    volumes:
+      - ./oauth-server/hydra-config.yaml:/path/inside/container/hydra-config.yaml
+    depends_on:
+      postgresd:
+        condition: service_healthy
+
+
+  postgresd:
+    container_name: postgresd
+    image: postgres
+    env_file: ./postgresd/postgresd.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgresd/postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hydra"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  consent-app:
+    container_name: consent-app
+    build:
+      context: ./consent-app/
+      dockerfile: Dockerfile
+    volumes:
+      - ./consent-app:/consent-app
+      - '/consent-app/node_modules'
+    ports:
+      - "3000:3000"
+    env_file: ./consent-app/consent-app.env
