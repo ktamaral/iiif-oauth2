@@ -12,7 +12,11 @@ This app is for demonstration purposes only and is not intended for Production. 
 
 ### OAuth server
 
-The oauth-server container is running an open-source oauth server called Hydra. Read more about the [docker compose setup on the ORY Hydra website](https://www.ory.sh/docs/hydra/5min-tutorial). 
+The oauth-server container is running an open-source oauth server called Hydra.
+
+Read more about Hydra
+* [Tutorial](https://www.ory.sh/docs/hydra/5min-tutorial).
+* [Production](https://www.ory.sh/docs/hydra/self-hosted/production)
 
 Ensure the DSN environment variable for Hydra is correctly pointing to the PostgreSQL service. The DSN should match the service name and credentials of the PostgreSQL container.
 
@@ -22,6 +26,10 @@ dsn: postgres://auth:secret@auth-db:5432/auth?sslmode=disable&max_conns=20&max_i
 ```
 
 ### Consent app
+
+The consent app was forked from the example consent app created by Hydra.
+
+https://github.com/ktamaral/iiif-oauth2-consent
 
 Copy the "{appname}.env.example" files in each microservice subdirectory.
 
