@@ -1,8 +1,8 @@
 version: '3.7'
 
 networks:
-  intranet:
-    driver: bridge
+  hydranet:
+    name: "hydranet"
 
 services:
   hydra-migrate:
@@ -15,7 +15,7 @@ services:
       - DSN=postgres://auth:secret@auth-db:5432/auth?sslmode=disable&max_conns=20&max_idle_conns=4
     command: migrate sql -e --yes
     networks:
-      - intranet
+      - "hydranet"
 
   hydra:
     container_name: hydra
@@ -31,7 +31,7 @@ services:
       serve -c /etc/hydra/config/hydra.yml all --dev
     restart: on-failure
     networks:
-      - intranet
+      - "hydranet"
     volumes:
       - type: bind
         source: ./config
@@ -52,18 +52,31 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - intranet
+      - "hydranet"
 
-  consent-app:
-    container_name: consent-app
-    build:
-      context: ./consent-app/
-      dockerfile: Dockerfile
-    depends_on:
-      - hydra
-    volumes:
-      - ./consent-app:/consent-app
-      - '/consent-app/node_modules'
-    ports:
-      - "3000:3000"
-    env_file: ./consent-app/consent-app.env
+  #consent-app:
+    #container_name: consent-app
+    #environment:
+      #- HYDRA_ADMIN_URL=http://hydra:4445
+    #build:
+      #context: ./consent-app/
+      #dockerfile: Dockerfile
+    #depends_on:
+      #- hydra
+    #volumes:
+      #- ./consent-app:/consent-app
+      #- '/consent-app/node_modules'
+    #ports:
+      #- "3000:3000"
+    #env_file: ./consent-app/consent-app.env
+    #networks:
+      #- "hydranet"
+  #consent:
+    #environment:
+      #- HYDRA_ADMIN_URL=http://hydra:4445
+    #image: oryd/hydra-login-consent-node:v2.2.0
+    #ports:
+      #- "3000:3000"
+    #restart: unless-stopped
+    #networks:
+      #- intranet
