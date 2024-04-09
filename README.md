@@ -47,13 +47,3 @@ dsn: postgres://auth:secret@auth-db:5432/auth?sslmode=disable&max_conns=20&max_i
 ## Consent App
 
 The [IIIF OAuth2 Consent App](https://github.com/ktamaral/iiif-oauth2-consent) is the User Interface that accepts user input and sends login requests to the OAuth server. Start the OAuth server first and then run the consent app using the instructions in the README.
-
-The consent app was forked from the example consent app created by Hydra.
-
-https://github.com/ktamaral/iiif-oauth2-consent
-
-Copy the "{appname}.env.example" files in each microservice subdirectory.
-
-Make a copy of the `consent-app.env.example.txt` file and rename it to `consent-app.env` in the consent-app directory of the project. Replace placeholder credentials.
-
-The hostnames, ports, and credentials must be configured to connect the microservices on the internal docker network.
